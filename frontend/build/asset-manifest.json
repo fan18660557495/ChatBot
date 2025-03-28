@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/ChatBot/static/css/main.59799560.css",
+    "main.js": "/ChatBot/static/js/main.d2f9d27a.js",
+    "static/js/453.99dcf01f.chunk.js": "/ChatBot/static/js/453.99dcf01f.chunk.js",
+    "static/media/remixicon.svg?t=1734404658139": "/ChatBot/static/media/remixicon.df9902a6df13645438e1.svg",
+    "static/media/avatar.png": "/ChatBot/static/media/avatar.417062c62f2da5f09395.png",
+    "static/media/remixicon.eot?t=1734404658139": "/ChatBot/static/media/remixicon.29066d810a74e994be27.eot",
+    "static/media/remixicon.ttf?t=1734404658139": "/ChatBot/static/media/remixicon.868d1a768f4762dbcc3e.ttf",
+    "static/media/remixicon.woff?t=1734404658139": "/ChatBot/static/media/remixicon.ce82bb240fef24f93f95.woff",
+    "static/media/remixicon.woff2?t=1734404658139": "/ChatBot/static/media/remixicon.bb211d855a1864aa5b67.woff2",
+    "static/media/logo.png": "/ChatBot/static/media/logo.ad7e7868a8e0f4f89863.png",
+    "static/media/file-icon-csv.svg": "/ChatBot/static/media/file-icon-csv.62f419d6b5a9dd5e9a63cd2095e50603.svg",
+    "static/media/file-icon-doc.svg": "/ChatBot/static/media/file-icon-doc.7a3a8c2aeb0242f7e7d517cb30eab851.svg",
+    "static/media/file-icon-img.svg": "/ChatBot/static/media/file-icon-img.a11ec6d53496b28d9f3085334ab60da1.svg",
+    "static/media/file-icon-pdf.svg": "/ChatBot/static/media/file-icon-pdf.0d5d99ce01219aa22cbb121ec43c7bbc.svg",
+    "static/media/file-icon-ppt.svg": "/ChatBot/static/media/file-icon-ppt.d107b97f93620d512f354f2ba4f362ce.svg",
+    "index.html": "/ChatBot/index.html",
+    "main.59799560.css.map": "/ChatBot/static/css/main.59799560.css.map",
+    "main.d2f9d27a.js.map": "/ChatBot/static/js/main.d2f9d27a.js.map",
+    "453.99dcf01f.chunk.js.map": "/ChatBot/static/js/453.99dcf01f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.59799560.css",
+    "static/js/main.d2f9d27a.js"
+  ]
+}
