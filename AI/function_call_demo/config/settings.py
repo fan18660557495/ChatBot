@@ -1,0 +1,12 @@
+# Ollama配置
+# 指定使用的Ollama模型名称, 这里指定 Ollama 模型名称为 qwen2.5，可根据需求替换为其他模型，如 qwen2.5:32b、deepseek-r1:32b
+# 可通过 ollama list 命令查看本地安装的模型
+OLLAMA_MODEL = "deepseek-r1:32b"
+# 指定Ollama服务器的基础URL地址
+OLLAMA_BASE_URL = "http://www.esunrising.net:11434"
+# 指定Ollama模型的随机性参数
+# temperature参数的范围通常是0到1之间的浮点数。当temperature=0时，模型输出最确定性的结果，始终选择概率最高的token；
+# 当temperature=1时，模型输出最具随机性，会按照概率分布随机采样；
+# temperature值越接近0，输出越稳定和确定，值越接近1，输出越具有创造性和随机性。
+# 在实际应用中，通常建议将temperature设置在0.1-0.3之间以获得相对稳定且合理的输出。
+OLLAMA_TEMPERATURE = 0.1
