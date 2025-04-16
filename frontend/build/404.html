@@ -3,13 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>Redirecting...</title>
+    <script>
+      sessionStorage.redirect = location.href;
+    </script>
+    <meta http-equiv="refresh" content="0;URL='/ChatBot/'">
   </head>
   <body>
-    <script>
-      // 获取当前路径
-      const path = window.location.pathname;
-      // 重定向到主页
-      window.location.href = '/ChatBot' + path;
-    </script>
+    Redirecting to the homepage...
   </body>
-</html> 
+</html>
