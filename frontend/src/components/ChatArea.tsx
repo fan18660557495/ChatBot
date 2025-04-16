@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect, JSX } from "react";
 import styled, { createGlobalStyle } from "styled-components";
 import logo from "../assets/logo.png";
-import avatar from "../assets/avatar.png";
+import { useUser } from '../contexts/UserContext';
+import { useChat } from '../contexts/ChatContext';
 import { sendMessage, sendMessage2Server as sendMessageOllama } from "../services/deepseek";
 import { checkConfig } from "../services/config";
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
@@ -1201,16 +1202,22 @@ const ChatArea: React.FC<ChatAreaProps> = ({ conversationTitle, setConversationT
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "1",
-      content: "你好！我是 AI 助手，有什么我可以帮你的吗？",
-      isUser: false,
-      timestamp: getCurrentTime(),
-    },
-  ]);
+  const { generalChatMessages, updateGeneralChatMessages } = useChat();
+  const [messages, setMessages] = useState<Message[]>(
+    generalChatMessages.length > 0 
+    ? generalChatMessages 
+    : [
+      {
+        id: "1",
+        content: "你好！我是 AI 助手，有什么我可以帮你的吗？",
+        isUser: false,
+        timestamp: getCurrentTime(),
+      },
+    ]
+  );
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
+  const { avatarUrl } = useUser();
   const [activeQuickAction, setActiveQuickAction] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
@@ -1226,6 +1233,11 @@ const ChatArea: React.FC<ChatAreaProps> = ({ conversationTitle, setConversationT
   const fileInputRef = useRef<HTMLInputElement>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const currentMessageRef = useRef<Message | null>(null);
+
+  // 当消息更新时，同步到全局状态
+  useEffect(() => {
+    updateGeneralChatMessages(messages);
+  }, [messages, updateGeneralChatMessages]);
 
   const handleTitleClick = () => {
     setTempTitle(conversationTitle);
@@ -1264,12 +1276,14 @@ const ChatArea: React.FC<ChatAreaProps> = ({ conversationTitle, setConversationT
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
     if (files.length > 0) {
+      // 只在尝试上传超过10个文件时显示错误提示
       if (selectedFiles.length + files.length > 10) {
         setShowErrorToast(true);
-        setTimeout(() => setShowErrorToast(false), 3000); // 3秒后自动隐藏
+        setTimeout(() => setShowErrorToast(false), 3000);
         return;
       }
 
+      // 处理有效的文件上传
       files.forEach(file => {
         let previewUrl;
         if (file.type.startsWith('image/')) {
@@ -1525,10 +1539,12 @@ const ChatArea: React.FC<ChatAreaProps> = ({ conversationTitle, setConversationT
   return (
     <ChatAreaContainer>
       <GlobalStyle />
-      <ErrorToast isVisible={showErrorToast}>
-        <Icon className="ri-error-warning-line" />
-        <span>最多只能上传 10 张图片</span>
-      </ErrorToast>
+      {showErrorToast && (
+        <ErrorToast isVisible={showErrorToast}>
+          <Icon className="ri-error-warning-line" />
+          <span>最多只能上传 10 个文件</span>
+        </ErrorToast>
+      )}
       <ContentWrapper>
         <Header>
           <HeaderWrapper>
@@ -1617,7 +1633,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({ conversationTitle, setConversationT
                     )}
                   </MessageContent>
                   <MessageAvatar
-                    src={avatar}
+                    src={avatarUrl}
                     alt="User avatar"
                     style={{ order: 2 }}
                   />

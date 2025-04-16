@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 import { ThemeProvider } from 'styled-components';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -53,12 +54,14 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <MuiThemeProvider theme={theme}>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <App />
-      </ThemeProvider>
-    </MuiThemeProvider>
+    <BrowserRouter basename={process.env.PUBLIC_URL}>
+      <MuiThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <App />
+        </ThemeProvider>
+      </MuiThemeProvider>
+    </BrowserRouter>
   </React.StrictMode>
 );
 

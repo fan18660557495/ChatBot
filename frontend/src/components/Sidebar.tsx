@@ -1,12 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useTheme } from 'styled-components';
+import { useUser } from '../contexts/UserContext';
 import logo from '../assets/logo.png';
-import avatar from '../assets/avatar.png';
+import aiAgent1 from '../assets/ai agent1.png';
 import Tooltip from './Tooltip';
 
 const Icon = styled.i`
   font-size: 16px;
   line-height: 1;
+`;
+
+const NavIcon = styled.img`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
 `;
 
 const SidebarContainer = styled.div<{ isCollapsed: boolean }>`
@@ -124,11 +133,17 @@ const NavItem = styled.div<{ active?: boolean; isCollapsed: boolean }>`
   background: ${props => props.active ? '#FFFFFF' : 'transparent'};
   box-shadow: ${props => props.active ? '0px 1px 3px rgba(29, 33, 41, 0.1)' : 'none'};
   width: 100%;
+  transition: all 0.3s ease;
 
   &:hover {
     background: #FFFFFF;
     color: #1D2129;
+    background: linear-gradient(90deg, #FFFFFF 0%, #F7F8FA 100%);
   }
+
+  ${props => props.active && `
+    background: linear-gradient(90deg, #FFFFFF 0%, #F7F8FA 100%);
+  `}
 
   span {
     display: ${props => props.isCollapsed ? 'none' : 'block'};
@@ -187,27 +202,22 @@ const ChatItem = styled.div<{ active?: boolean; isCollapsed: boolean }>`
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  background: #FFFFFF;
+  background: ${props => props.active ? '#FFFFFF' : 'transparent'};
   box-shadow: ${props => props.active ? '0px 1px 3px rgba(29, 33, 41, 0.1)' : 'none'};
   width: 100%;
   overflow: hidden;
+  transition: all 0.3s ease;
 
   &:hover {
     background: #FFFFFF;
+    background: linear-gradient(90deg, #FFFFFF 0%, #F7F8FA 100%);
   }
 
-  &::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 48px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, #FFFFFF 100%);
-    pointer-events: none;
-    display: ${props => props.isCollapsed ? 'none' : 'block'};
-    border-radius: 0 4px 4px 0;
-  }
+  ${props => props.active && `
+    background: linear-gradient(90deg, #FFFFFF 0%, #F7F8FA 100%);
+  `}
+
+
 
   .more-icon {
     position: absolute;
@@ -250,7 +260,7 @@ const ChatText = styled.span<{ isCollapsed: boolean }>`
   display: ${props => props.isCollapsed ? 'none' : 'block'};
 `;
 
-const UserProfile = styled.div<{ isCollapsed: boolean }>`
+const UserProfile = styled.div<{ isCollapsed: boolean; active?: boolean }>`
   display: flex;
   align-items: center;
   padding: 8px ${props => props.isCollapsed ? '0' : '12px'};
@@ -259,9 +269,11 @@ const UserProfile = styled.div<{ isCollapsed: boolean }>`
   border-radius: 4px;
   cursor: pointer;
   width: 100%;
+  background: ${props => props.active ? '#FFFFFF' : 'transparent'};
+  box-shadow: ${props => props.active ? '0px 1px 3px rgba(29, 33, 41, 0.1)' : 'none'};
 
   &:hover {
-    background: rgba(0, 0, 0, 0.04);
+    background: #FFFFFF;
   }
 
   span {
@@ -326,6 +338,10 @@ const Sidebar: React.FC<SidebarProps> = ({ conversationTitle }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0 });
   const [dropdownTrigger, setDropdownTrigger] = useState<'more' | 'chat' | null>(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const theme = useTheme();
+  const { avatarUrl } = useUser();
 
   useEffect(() => {
     const handleResize = () => {
@@ -367,12 +383,13 @@ const Sidebar: React.FC<SidebarProps> = ({ conversationTitle }) => {
     }
   };
 
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
+
   const navItems = [
-    { icon: "ri-search-line", text: "AI搜索" },
-    { icon: "ri-code-line", text: "AI编程" },
-    { icon: "ri-bar-chart-line", text: "AI图表" },
-    { icon: "ri-book-2-line", text: "知识库" },
-    { icon: "ri-apps-line", text: "智能体" }
+    { icon: aiAgent1, text: "财务制度", isImage: true, path: "/financial" },
+    { icon: aiAgent1, text: "智能问数", isImage: true, path: "/data-query" },
   ];
 
   return (
@@ -414,21 +431,35 @@ const Sidebar: React.FC<SidebarProps> = ({ conversationTitle }) => {
           </NewChatButton>
         </Tooltip>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
-          {navItems.map((item) => (
-            <NavItemWrapper key={item.text}>
-              <Tooltip content={item.text} show={isCollapsed && hoveredItem === item.text}>
-                <NavItem 
-                  isCollapsed={isCollapsed}
-                  onMouseEnter={() => setHoveredItem(item.text)}
-                  onMouseLeave={() => setHoveredItem(null)}
-                >
-                  <Icon className={item.icon} />
-                  <span>{item.text}</span>
-                </NavItem>
-              </Tooltip>
-            </NavItemWrapper>
-          ))}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <RecentChatsHeader isCollapsed={isCollapsed}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Icon className="ri-apps-2-ai-line" />
+              {!isCollapsed && <span>智能体</span>}            
+            </div>
+          </RecentChatsHeader>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+            {navItems.map((item) => (
+              <NavItemWrapper key={item.text}>
+                <Tooltip content={item.text} show={isCollapsed && hoveredItem === item.text}>
+                  <NavItem 
+                    isCollapsed={isCollapsed}
+                    onMouseEnter={() => setHoveredItem(item.text)}
+                    onMouseLeave={() => setHoveredItem(null)}
+                    active={item.path && location.pathname === item.path ? true : false}
+                    onClick={() => item.path && navigate(item.path)}
+                  >
+                    {item.isImage ? (
+                      <NavIcon src={item.icon} alt={item.text} />
+                    ) : (
+                      <Icon className={item.icon} />
+                    )}
+                    <span>{item.text}</span>
+                  </NavItem>
+                </Tooltip>
+              </NavItemWrapper>
+            ))}
+          </div>
         </div>
 
         <Divider isCollapsed={isCollapsed} />
@@ -459,10 +490,11 @@ const Sidebar: React.FC<SidebarProps> = ({ conversationTitle }) => {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
             <Tooltip content={conversationTitle} show={isCollapsed && hoveredItem === 'recentChat'}>
               <ChatItem 
-                active 
+                active={location.pathname === '/'} 
                 isCollapsed={isCollapsed}
                 onMouseEnter={() => setHoveredItem('recentChat')}
                 onMouseLeave={() => setHoveredItem(null)}
+                onClick={() => navigate('/')}
               >
                 <ChatDot />
                 <ChatText isCollapsed={isCollapsed}>{conversationTitle}</ChatText>
@@ -478,13 +510,15 @@ const Sidebar: React.FC<SidebarProps> = ({ conversationTitle }) => {
         </RecentChats>
       </TopSection>
 
-      <Tooltip content="范米花儿" show={isCollapsed && hoveredItem === 'userProfile'}>
+      <Tooltip content="个人信息" show={isCollapsed && hoveredItem === 'userProfile'}>
         <UserProfile 
           isCollapsed={isCollapsed}
           onMouseEnter={() => setHoveredItem('userProfile')}
           onMouseLeave={() => setHoveredItem(null)}
+          onClick={handleProfileClick}
+          active={location.pathname === '/profile'}
         >
-          <Avatar src={avatar} alt="User avatar" />
+          <Avatar src={avatarUrl} alt="User avatar" />
           <span>范米花儿</span>
         </UserProfile>
       </Tooltip>
